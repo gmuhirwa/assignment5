@@ -72,15 +72,25 @@ var switchMenuToActive = function () {
 document.addEventListener("DOMContentLoaded", function (event) {
 
 // On first load, show home view
-showLoading("#main-content");
+/*showLoading("#main-content");
 $ajaxUtils.sendGetRequest(
-  homeHtmlUrl, 
+  homeHtmlUrl,
   function (responseText) {
     document.querySelector("#main-content")
       .innerHTML = responseText;
   },
   false);
+});*/
+
+// *** start ***
+// On first load, show home view
+showLoading("#main-content");
+$ajaxUtils.sendGetRequest(
+  allCategoriesUrl,
+  buildAndShowHomeHTML, // ***** <---- TODO: STEP 1: Substitute [...] ******
+  true); // Explicitely setting the flag to get JSON from server processed into an object literal
 });
+// *** finish **
 
 // Builds HTML for the home page based on categories array
 // returned from the server.
