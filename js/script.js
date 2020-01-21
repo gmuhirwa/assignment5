@@ -7,16 +7,6 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
       $("#collapsable-nav").collapse('hide');
     }
   });
-
-  // In Firefox and Safari, the click event doesn't retain the focus
-  // on the clicked button. Therefore, the blur event will not fire on
-  // user clicking somewhere else in the page and the blur event handler
-  // which is set up above will not be called.
-  // Refer to issue #28 in the repo.
-  // Solution: force focus on the element that the click event fired on
-  $("#navbarToggle").click(function (event) {
-    $(event.target).focus();
-  });
 });
 
 (function (global) {
@@ -45,6 +35,7 @@ var showLoading = function (selector) {
   html += "<img src='images/ajax-loader.gif'></div>";
   insertHtml(selector, html);
 };
+
 // Return substitute of '{{propName}}'
 // with propValue in given 'string'
 var insertProperty = function (string, propName, propValue) {
@@ -68,19 +59,27 @@ var switchMenuToActive = function () {
     document.querySelector("#navMenuButton").className = classes;
   }
 };
+
 // On page load (before images or CSS)
 document.addEventListener("DOMContentLoaded", function (event) {
 
-// On first load, show home view
-/*showLoading("#main-content");
-$ajaxUtils.sendGetRequest(
-  homeHtmlUrl,
-  function (responseText) {
-    document.querySelector("#main-content")
-      .innerHTML = responseText;
-  },
-  false);
-});*/
+// TODO: STEP 0: Look over the code from
+// *** start ***
+// to
+// *** finish ***
+// below.
+// We changed this code to retrieve all categories from the server instead of
+// simply requesting home HTML snippet. We now also have another function
+// called buildAndShowHomeHTML that will receive all the categories from the server
+// and process them: choose random category, retrieve home HTML snippet, insert that
+// random category into the home HTML snippet, and then insert that snippet into our
+// main page (index.html).
+
+
+
+//
+// TODO: STEP 1: Substitute [...] below with the *value* of the function buildAndShowHomeHTML,
+// so it can be called when server responds with the categories data.
 
 // *** start ***
 // On first load, show home view
@@ -92,20 +91,21 @@ $ajaxUtils.sendGetRequest(
 });
 // *** finish **
 
+
 // Builds HTML for the home page based on categories array
 // returned from the server.
 function buildAndShowHomeHTML (categories) {
 
   // Load home snippet page
   $ajaxUtils.sendGetRequest(
-    homeHtmlUrl, 
+    homeHtmlUrl,
     function (homeHtml) {
 
       // TODO: STEP 2: Here, call chooseRandomCategory, passing it retrieved 'categories'
       // Pay attention to what type of data that function returns vs what the chosenCategoryShortName
       // variable's name implies it expects.
+      // var chosenCategoryShortName = ....
       var chosenCategoryShortName = chooseRandomCategory(categories).short_name;
-
 
       // TODO: STEP 3: Substitute {{randomCategoryShortName}} in the home html snippet with the
       // chosen category from STEP 2. Use existing insertProperty function for that purpose.
@@ -118,14 +118,16 @@ function buildAndShowHomeHTML (categories) {
       // Hint: you need to surround the chosen category short name with something before inserting
       // it into the home html snippet.
       //
+      // var homeHtmlToInsertIntoMainPage = ....
+      
       chosenCategoryShortName = "'" + chosenCategoryShortName + "'";
       var homeHtmlToInsertIntoMainPage = insertProperty(homeHtml, "randomCategoryShortName", chosenCategoryShortName);
 
       // TODO: STEP 4: Insert the the produced HTML in STEP 3 into the main page
       // Use the existing insertHtml function for that purpose. Look through this code for an example
       // of how to do that.
-      insertHtml("main-content", homeHtmlToInsertIntoMainPage);
-
+      // ....
+      insertHtml("#main-content", homeHtmlToInsertIntoMainPage); 
     },
     false); // False here because we are getting just regular HTML from the server, so no need to process JSON.
 }
@@ -140,7 +142,6 @@ function chooseRandomCategory (categories) {
   return categories[randomArrayIndex];
 }
 
-
 // Load the menu categories view
 dc.loadMenuCategories = function () {
   showLoading("#main-content");
@@ -148,7 +149,6 @@ dc.loadMenuCategories = function () {
     allCategoriesUrl,
     buildAndShowCategoriesHTML);
 };
-
 
 // Load the menu items view
 // 'categoryShort' is a short_name for a category
